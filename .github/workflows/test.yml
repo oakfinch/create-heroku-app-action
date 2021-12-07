@@ -22,4 +22,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: ./
       with:
-        milliseconds: 1000
+        HEROKU_API_TOKEN: token
+        HEROKU_EPHEMERAL_DOMAIN: domain
+        NAMECHEAP_USERNAME: username
+        NAMECHEAP_API_KEY: key

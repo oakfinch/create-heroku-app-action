@@ -30,7 +30,7 @@
     "@actions/exec": "^1.1.0",
     "formdata-polyfill": "^4.0.10",
     "heroku-client": "^3.1.0",
-    "node-fetch": "^3.1.0"
+    "node-fetch-cjs": "^3.1.0-fix.1"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.31.1",

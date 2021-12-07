@@ -1,8 +1,8 @@
-import core from '@actions/core'
-import exec from '@actions/exec'
-import Heroku from 'heroku-client'
-import fetch from 'node-fetch'
-import { FormData } from 'formdata-polyfill/esm.min.js'
+const core = require('@actions/core')
+const exec = require('@actions/exec')
+const Heroku = require('heroku-client')
+const fetch = require('node-fetch-cjs')
+const { FormData } = require('formdata-polyfill/esm.min.js')
 
 const domain = core.getInput('EPHEMERAL_DOMAIN')
 const heroku = new Heroku({ token: core.getInput('HEROKU_API_TOKEN') })
