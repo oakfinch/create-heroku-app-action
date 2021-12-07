@@ -43,26 +43,23 @@ async function run() {
 
   // add CNAME record to namecheap
   const { cname } = d
-  const args = [
-    `https://api.cloudflare.com/client/v4/zones/${cloudflare.zone}/dns_records`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${cloudflare.token}`
-      },
-      body: JSON.stringify({
-        type: 'CNAME',
-        name: app.name,
-        content: cname,
-        ttl: 60
-      })
-    }
-  ]
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${cloudflare.token}`
+    },
+    body: JSON.stringify({
+      type: 'CNAME',
+      name: app.name,
+      content: cname,
+      ttl: 60
+    })
+  }
 
-  console.log('adding cname record', args)
-  const response = await fetch(...args)
-  const result = await response.text()
+  console.log('adding cname record', `https://api.cloudflare.com/client/v4/zones/${cloudflare.zone}/dns_records`, options)
+  const response = await fetch(`https://api.cloudflare.com/client/v4/zones/${cloudflare.zone}/dns_records`, options)
+  const result = await response.json()
   console.log('added cname record', result)
 
   core.setOutput('url', `http://${app.name}.${domain}`)
