@@ -9265,12 +9265,19 @@ async function run() {
       '/apps',
       { body: { name: subdomain } }
     )
+    console.log('app created', app)
   } catch (error) {
-    console.error(error)
-    throw error
+    if (error.statusCode !== 422) {
+      console.error(error)
+      throw error
+    }
+    if (error.body.message !== `Name ${subdomain} is already taken`) {
+      console.error(error)
+      throw error
+    }
+    console.log('app already created', app)
+    return
   }
-
-  console.log('app created', app)
 
   // add domain to heroku app
   console.log('adding domain', 'post', `/apps/${app.name}/domains`, { body: { hostname: `${app.name}.${domain}`, sni_endpoint: null } })
@@ -9303,9 +9310,16 @@ async function run() {
   }
 
   console.log('adding cname record', `https://api.cloudflare.com/client/v4/zones/${cloudflare.zone}/dns_records`, options)
-  const response = await fetch(`https://api.cloudflare.com/client/v4/zones/${cloudflare.zone}/dns_records`, options)
-  const result = await response.json()
-  console.log('added cname record', result)
+
+  try {
+    const response = await fetch(`https://api.cloudflare.com/client/v4/zones/${cloudflare.zone}/dns_records`, options)
+    const result = await response.json()
+    console.log('added cname record', result)
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+
 
   core.setOutput('url', `http://${app.name}.${domain}`)
 }
