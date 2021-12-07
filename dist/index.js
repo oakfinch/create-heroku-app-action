@@ -15221,11 +15221,16 @@ async function run() {
 
   // create heroku app
   console.log('creating app', 'post', '/apps', { body: { name: subdomain } })
-
-  const app = await heroku.post(
-    '/apps',
-    { body: { name: subdomain } }
-  )
+  let app
+  try {
+    app = await heroku.post(
+      '/apps',
+      { body: { name: subdomain } }
+    )
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
 
   console.log('app created', app)
 
