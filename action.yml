@@ -10,11 +10,11 @@ inputs:
   HEROKU_API_TOKEN:
     description: 'Heroku api token'
     required: true
-  NAMECHEAP_USERNAME:
-    description: 'Namecheap Username'
+  CLOUDFLARE_TOKEN:
+    description: 'Cloudflare token'
     required: true
-  NAMECHEAP_API_KEY:
-    description: 'Namecheap API key'
+  CLOUDFLARE_ZONE:
+    description: 'Cloudflare zone'
     required: true
 outputs:
   url:
