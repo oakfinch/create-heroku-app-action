@@ -1,5 +1,4 @@
 const core = require('@actions/core')
-const exec = require('@actions/exec')
 const Heroku = require('heroku-client')
 const { default: fetch } = require('node-fetch-cjs')
 
@@ -36,15 +35,6 @@ async function run() {
   )
   console.log('added domain', d)
 
-  // get external IP
-  console.log('getting IP')
-  const { stdout: ip } = await exec.getExecOutput(
-    'dig',
-    ['+short', 'myip.opendns.com', '@resolver1.opendns.com'],
-    { silent: true }
-  )
-  console.log('got IP', ip)
-
   // add CNAME record to namecheap
   const { cname } = d
   const args = [
@@ -55,12 +45,12 @@ async function run() {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${cloudflare.token}`
       },
-      body: {
+      body: JSON.stringify({
         type: 'CNAME',
         name: app.name,
         content: cname,
         ttl: 60
-      }
+      })
     }
   ]
 
