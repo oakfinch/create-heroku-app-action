@@ -29,10 +29,16 @@ async function run() {
 
   // add domain to heroku app
   console.log('adding domain', 'post', `/apps/${app.name}/domains`, { body: { hostname: `${app.name}.${domain}`, sni_endpoint: null } })
-  const d = await heroku.post(
-    `/apps/${app.name}/domains`,
-    { body: { hostname: `${app.name}.${domain}`, sni_endpoint: null } }
-  )
+  let d
+  try {
+    d = await heroku.post(
+      `/apps/${app.name}/domains`,
+      { body: { hostname: `${app.name}.${domain}`, sni_endpoint: null } }
+    ) 
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
   console.log('added domain', d)
 
   // add CNAME record to namecheap
