@@ -15206,7 +15206,7 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(2186)
 const exec = __nccwpck_require__(1514)
 const Heroku = __nccwpck_require__(504)
-const fetch = __nccwpck_require__(563)
+const { default: fetch } = __nccwpck_require__(563)
 const { FormData } = __nccwpck_require__(5008)
 
 const domain = core.getInput('DOMAIN')

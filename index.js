@@ -1,7 +1,7 @@
 const core = require('@actions/core')
 const exec = require('@actions/exec')
 const Heroku = require('heroku-client')
-const fetch = require('node-fetch-cjs')
+const { default: fetch } = require('node-fetch-cjs')
 const { FormData } = require('formdata-polyfill/esm.min.js')
 
 const domain = core.getInput('DOMAIN')
