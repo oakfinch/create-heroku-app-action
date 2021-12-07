@@ -2,7 +2,20 @@
 
 Created from the [JavaScript Action Template](https://github.com/actions/javascript-action)
 
-## Package for distribution
+## Usage
+
+```yaml
+uses: @oakfinch/create-heroku-app-action@v1
+with:
+  HEROKU_API_TOKEN: 'token',
+  HEROKU_EPHEMERAL_DOMAIN: 'domain',
+  NAMECHEAP_USERNAME: 'username',
+  NAMECHEAP_API_KEY: 'key',
+```
+
+## Contribution
+
+### Package for distribution
 
 GitHub Actions will run the entry point from the action.yml. Packaging assembles the code into one file that can be checked in to Git, enabling fast and reliable execution and preventing the need to check in node_modules.
 
@@ -20,7 +33,7 @@ Since the packaged index.js is run from the dist folder
 git add dist
 ```
 
-## Create a release branch
+### Create a release branch
 
 Users shouldn't consume the action from master since that would be latest code and actions can break compatibility between major versions.
 
@@ -40,15 +53,3 @@ Note: We recommend using the `--license` option for ncc, which will create a lic
 Your action is now published! :rocket:
 
 See the [versioning documentation](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
-
-## Usage
-
-You can now consume the action by referencing the v1 branch
-
-```yaml
-uses: actions/javascript-action@v1
-with:
-  milliseconds: 1000
-```
-
-See the [actions tab](https://github.com/actions/javascript-action/actions) for runs of this action! :rocket:
