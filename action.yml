@@ -1,0 +1,21 @@
+name: 'Create Ephemeral Heroku Application'
+description: 'Create Ephemeral Heroku Application'
+inputs:
+  HEROKU_API_TOKEN:
+    description: 'Heroku api token'
+    required: true
+  HEROKU_EPHEMERAL_DOMAIN:
+    description: 'Heroku ephemeral domain'
+    required: true
+  NAMECHEAP_USERNAME:
+    description: 'Namecheap Username'
+    required: true
+  NAMECHEAP_API_KEY:
+    description: 'Namecheap API key'
+    required: true
+outputs:
+  url:
+    description: 'The Heroku application url'
+runs:
+  using: 'node14'
+  main: 'dist/index.js'
