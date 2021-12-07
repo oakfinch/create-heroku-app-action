@@ -1,11 +1,14 @@
 name: 'Create Ephemeral Heroku Application'
 description: 'Create Ephemeral Heroku Application'
 inputs:
+  DOMAIN:
+    description: 'Heroku ephemeral domain'
+    required: true
+  SUBDOMAIN:
+    description: 'subdomain'
+    required: true
   HEROKU_API_TOKEN:
     description: 'Heroku api token'
-    required: true
-  HEROKU_EPHEMERAL_DOMAIN:
-    description: 'Heroku ephemeral domain'
     required: true
   NAMECHEAP_USERNAME:
     description: 'Namecheap Username'

@@ -4,7 +4,8 @@ const Heroku = require('heroku-client')
 const fetch = require('node-fetch-cjs')
 const { FormData } = require('formdata-polyfill/esm.min.js')
 
-const domain = core.getInput('EPHEMERAL_DOMAIN')
+const domain = core.getInput('DOMAIN')
+const subdomain = core.getInput('SUBDOMAIN')
 const heroku = new Heroku({ token: core.getInput('HEROKU_API_TOKEN') })
 const namecheap = {
   username: core.getInput('NAMECHEAP_USERNAME'),
@@ -14,7 +15,10 @@ const namecheap = {
 async function run() {
 
   // create heroku app
-  const app = await heroku.post('/apps')
+  const app = await heroku.post(
+    '/apps',
+    { body: { name: subdomain } }
+  )
 
   // add domain to heroku app
   const { cname } = await heroku.post(
