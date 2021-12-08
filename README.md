@@ -7,8 +7,9 @@ Created from the [JavaScript Action Template](https://github.com/actions/javascr
 ```yaml
 uses: @oakfinch/create-heroku-app-action@v1
 with:
+  DOMAIN: domain
+  SUBDOMAIN: subdomain
   HEROKU_API_TOKEN: token
-  HEROKU_EPHEMERAL_DOMAIN: domain
   NAMECHEAP_USERNAME: username
   NAMECHEAP_API_KEY: key
 ```

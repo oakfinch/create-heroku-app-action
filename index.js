@@ -1,62 +1,80 @@
 const core = require('@actions/core')
-const exec = require('@actions/exec')
 const Heroku = require('heroku-client')
-const fetch = require('node-fetch-cjs')
-const { FormData } = require('formdata-polyfill/esm.min.js')
+const { default: fetch } = require('node-fetch-cjs')
 
-const domain = core.getInput('EPHEMERAL_DOMAIN')
+const domain = core.getInput('DOMAIN')
+const subdomain = core.getInput('SUBDOMAIN')
 const heroku = new Heroku({ token: core.getInput('HEROKU_API_TOKEN') })
-const namecheap = {
-  username: core.getInput('NAMECHEAP_USERNAME'),
-  key: core.getInput('NAMECHEAP_API_KEY'),
+const cloudflare = {
+  token: core.getInput('CLOUDFLARE_TOKEN'),
+  zone: core.getInput('CLOUDFLARE_ZONE'),
 }
 
 async function run() {
 
   // create heroku app
-  const app = await heroku.post('/apps')
+  console.log('creating app', 'post', '/apps', { body: { name: subdomain } })
+  let app
+  try {
+    app = await heroku.post(
+      '/apps',
+      { body: { name: subdomain } }
+    )
+    console.log('app created', app)
+  } catch (error) {
+    if (error.statusCode !== 422) {
+      console.error(error)
+      throw error
+    }
+    if (error.body.message !== `Name ${subdomain} is already taken`) {
+      console.error(error)
+      throw error
+    }
+    console.log('app already created')
+    return
+  }
 
   // add domain to heroku app
-  const { cname } = await heroku.post(
-    `/apps/${app.name}/domains`,
-    { body: { hostname: `${app.name}.${domain}`, sni_endpoint: null } }
-  )
-
-  // get external IP
-  const { stdout: ip } = await exec.getExecOutput(
-    'dig',
-    ['+short', 'myip.opendns.com', '@resolver1.opendns.com'],
-    { silent: true }
-  )
+  console.log('adding domain', 'post', `/apps/${app.name}/domains`, { body: { hostname: `${app.name}.${domain}`, sni_endpoint: null } })
+  let d
+  try {
+    d = await heroku.post(
+      `/apps/${app.name}/domains`,
+      { body: { hostname: `${app.name}.${domain}`, sni_endpoint: null } }
+    ) 
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+  console.log('added domain', d)
 
   // add CNAME record to namecheap
-  const [sld, tld] = domain.split('.')
-  const body = Object.entries({
-    apiuser: namecheap.username,
-    apikey: namecheap.key,
-    username: namecheap.username,
-    Command: 'namecheap.domains.dns.setHosts',
-    ClientIp: ip.trim(),
-    SLD: sld,
-    TLD: tld,
-    HostName1: app.name,
-    RecordType1: 'CNAME',
-    Address1: cname,
-    TTL1: 100
-  }).reduce((acc, [key, val]) => {
-    acc.append(key, val)
-    return acc
-  }, new FormData())
+  const { cname } = d
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${cloudflare.token}`
+    },
+    body: JSON.stringify({
+      type: 'CNAME',
+      name: app.name,
+      content: cname,
+      ttl: 60
+    })
+  }
 
-  const args = [
-    "https://api.namecheap.com/xml.response",
-    {
-      method: 'POST',
-      body
-    }
-  ]
+  console.log('adding cname record', `https://api.cloudflare.com/client/v4/zones/${cloudflare.zone}/dns_records`, options)
 
-  await fetch(...args)
+  try {
+    const response = await fetch(`https://api.cloudflare.com/client/v4/zones/${cloudflare.zone}/dns_records`, options)
+    const result = await response.json()
+    console.log('added cname record', result)
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+
 
   core.setOutput('url', `http://${app.name}.${domain}`)
 }
