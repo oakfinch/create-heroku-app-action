@@ -9275,7 +9275,7 @@ async function run() {
       console.error(error)
       throw error
     }
-    console.log('app already created', app)
+    console.log('app already created')
     return
   }
 
