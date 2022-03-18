@@ -26,7 +26,7 @@
   "homepage": "https://github.com/oakfinch/create-heroku-app-action#readme",
   "dependencies": {
     "@actions/core": "^1.2.5",
-    "@actions/exec": "^1.1.0",
+    "@actions/exec": "^1.1.1",
     "heroku-client": "^3.1.0",
     "node-fetch-cjs": "^3.1.0-fix.1"
   },
